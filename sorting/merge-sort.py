@@ -1,5 +1,7 @@
 from lib import assertion
+from collections import deque
 
+# MERGE SORT WITH A PYTHON LIST
 def merge(l1, l2, l):
     """Merge sorted lists l1 and l2 together so that the answer is sorted.
     Overwrite l with the answer-- everything is done in-place"""
@@ -13,7 +15,6 @@ def merge(l1, l2, l):
             l[l1_i + l2_i] = l1[l1_i]
             l1_i += 1
             
-
 def merge_sort(l):
     len_l = len(l)
     if len_l > 1:
@@ -26,6 +27,36 @@ def merge_sort(l):
 
         merge(l1, l2, l)
 
+
+
+# MERGE SORT WITH A PYTHON DEQUE
+def merge2(S1, S2, S):
+    while not len(S1) == 0 or not len(S2) == 0:
+        if len(S2) == 0 or (len(S1) > 0 and S1[0] <= S2[0]):
+            S.append(S1.popleft())
+        else:
+            S.append(S2.popleft())
+
+def merge_sort2(S):
+    len_s = len(S)
+    if len_s < 2:
+        return
+    q_left = deque()
+    q_right = deque() 
+    
+    while len(q_left) < len_s // 2:
+        q_left.append(S.popleft())
+    while len(S) > 0:
+        q_right.append(S.popleft())
+
+    merge_sort2(q_left)
+    merge_sort2(q_right)
+    merge2(q_left, q_right, S)
+
+
+
+
+
 def main():
     l1 = [3,2,5,4,1]
     l2 = [1,2,3]
@@ -34,6 +65,15 @@ def main():
     l5 = [6,2]
     l6 = []
 
+    q1 = deque(l1)
+    q2 = deque(l2)
+    q3 = deque(l3)
+    q4 = deque(l4)
+    q5 = deque(l5)
+    q6 = deque(l6)
+
+
+    print("testing mergesort with a list!")
     merge_sort(l1)
     merge_sort(l2)
     merge_sort(l3)
@@ -47,6 +87,24 @@ def main():
     assertion.equals([1,2,4,8,11,56,777,1234], l4)
     assertion.equals([2,6], l5)
     assertion.equals([], l6)
+
+
+    print("testing mergesort with a deque!")
+    merge_sort2(q1)
+    merge_sort2(q2)
+    merge_sort2(q3)
+    merge_sort2(q4)
+    merge_sort2(q5)
+    merge_sort2(q6)
+
+    assertion.equals(deque([1,2,3,4,5]), q1)
+    assertion.equals(deque([1,2,3]), q2)
+    assertion.equals(deque([3]), q3)
+    assertion.equals(deque([1,2,4,8,11,56,777,1234]), q4)
+    assertion.equals(deque([2,6]), q5)
+    assertion.equals(deque([]), q6)
+
+
 
 if __name__ == '__main__':
     main()

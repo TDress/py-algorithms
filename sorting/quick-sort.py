@@ -1,0 +1,114 @@
+from lib import assertion
+from statistics import median
+from collections import deque
+
+# USING A LIST, USING "MEDIAN-OF-THREE" HEURISTIC INSTEAD OF RANDOMIZATION
+# this is a rather weak implementation because we are not doing it in place
+def quick_sort(l):
+    len_l = len(l)
+    if len_l < 2:
+        return l
+    # set the pivot index
+    if len_l > 2:
+        start = l[0]
+        mid = l[len_l // 2]
+        end = l[-1]
+        pivot_value = median([start, mid, end])
+        pivot_index = len_l // 2
+        if l[0] == pivot_value: pivot_index = 0
+        elif l[-1] == pivot_value: pivot_index = len_l - 1
+    else:
+        pivot_value = l[1]
+        pivot_index = 1
+
+    left = []
+    right = []
+    middle = []
+    for i in range(len_l):
+        if l[i] < pivot_value:
+            left.append(l[i])
+        elif l[i] > pivot_value:
+            right.append(l[i])
+        else:
+            middle.append(l[i])
+
+    left = quick_sort(left)
+    right = quick_sort(right)
+
+    middle.extend(right)
+    left.extend(middle)
+    return left
+        
+# QUICKSORT WITH A DEQUE.  NO OPTIMIZATIONS.
+def quicksort2(S):
+    len_s = len(S)
+    if len_s > 1:
+        pivot = S.popleft()
+        L = deque()
+        E = deque([pivot])
+        G = deque()
+
+        while len(S) > 0:
+            next = S.popleft()
+            if next > pivot:
+                G.append(next)
+            elif next < pivot:
+                L.append(next)
+            else:
+                E.append(next)
+
+        quicksort2(L)
+        quicksort2(G)
+
+        for queue in [L, E, G]:
+            while len(queue) > 0:
+                S.append(queue.popleft())
+
+
+
+def main():
+    l1 = [3,2,5,4,1]
+    l2 = [1,2,3]
+    l3 = [3]
+    l4 = [777,11,1,8,1234,56,2,4]
+    l5 = [6,2]
+    l6 = []
+
+    q1 = deque(l1)
+    q2 = deque(l2)
+    q3 = deque(l3)
+    q4 = deque(l4)
+    q5 = deque(l5)
+    q6 = deque(l6)
+
+    print("testing quicksort with a list...")
+    assertion.equals([1,2,3,4,5], quick_sort(l1))
+    assertion.equals([1,2,3], quick_sort(l2))
+    assertion.equals([3], quick_sort(l3))
+    assertion.equals([1,2,4,8,11,56,777,1234], quick_sort(l4))
+    assertion.equals([2,6], quick_sort(l5))
+    assertion.equals([], quick_sort(l6))
+
+    print("testing quicksort with a deque...")
+    quicksort2(q1)
+    quicksort2(q2)
+    quicksort2(q3)
+    quicksort2(q4)
+    quicksort2(q5)
+    quicksort2(q6)
+    
+    assertion.equals(deque([1,2,3,4,5]), q1)
+    assertion.equals(deque([1,2,3]), q2)
+    assertion.equals(deque([3]), q3)
+    assertion.equals(deque([1,2,4,8,11,56,777,1234]), q4)
+    assertion.equals(deque([2,6]), q5)
+    assertion.equals(deque([]), q6)
+
+
+
+if __name__ == '__main__':
+    main()
+
+        
+
+

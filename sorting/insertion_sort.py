@@ -10,13 +10,21 @@ def insertion_sort(l):
         
         l[j] = current
 
-    return l
-
 def main():
-    assertion.equals([1,2,3,4,5], insertion_sort([2,5,3,4,1]))
-    assertion.equals([1,2,3,4,5], insertion_sort([5,4,3,2,1]))
-    assertion.equals([1], insertion_sort([1]))
-    assertion.equals([1,5], insertion_sort([5,1]))
+    l1 = [2,5,3,4,1]
+    l2 = [5,4,3,2,1]
+    l3 = [1]
+    l4 = [5,1]
+
+    insertion_sort(l1)
+    insertion_sort(l2)
+    insertion_sort(l3)
+    insertion_sort(l4)
+
+    assertion.equals([1,2,3,4,5], l1)
+    assertion.equals([1,2,3,4,5], l2)
+    assertion.equals([1], l3)
+    assertion.equals([1,5], l4)
 
 
 if __name__ == '__main__':

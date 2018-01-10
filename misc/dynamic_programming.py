@@ -22,6 +22,26 @@ def LCS(X, Y):
 
     return L
 
+def LCS_extract(X, Y, L):
+    """Extract the LCS of X and Y using subsequence length table L.
+
+    Reverse engineer the table of lengths to construct the 
+    longest subsequence and return it as a string.
+    """
+
+    answer = []
+    walk_X, walk_Y = len(X), len(Y)
+    while L[walk_X][walk_Y] != 0:
+        if X[walk_X - 1] == Y[walk_Y - 1]:
+            answer.append(X[walk_X - 1])
+            walk_X -= 1
+            walk_Y -= 1
+        elif L[walk_X - 1][walk_Y] > L[walk_X][walk_Y - 1]:
+            walk_X -= 1
+        else:
+            walk_Y -= 1
+
+    return ''.join(reversed(answer))
 
 
 def main():
@@ -39,6 +59,9 @@ def main():
     assertion.equals(3, table[20][3])
     assertion.equals(3, table[5][5])
     assertion.equals(5, table[8][8])
+
+    assertion.equals('GTCATACACATCATGTAGC', LCS_extract(X, Y, table))
+
 
 if __name__ == '__main__':
     main()

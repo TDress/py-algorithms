@@ -10,7 +10,7 @@ class PriorityQueueBase:
         """lightweight composite class for priority queue items"""
         __slots__ = '_key', '_value'
 
-        def __init(self, k, v):
+        def __init__(self, k, v):
             self._key = k
             self._value = v
 

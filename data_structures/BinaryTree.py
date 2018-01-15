@@ -1,4 +1,4 @@
-import Tree
+from .Tree import Tree
 
 class BinaryTree(Tree):
     """Abstract Base Class for a binary tree structure"""

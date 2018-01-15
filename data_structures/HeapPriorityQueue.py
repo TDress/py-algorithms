@@ -1,4 +1,4 @@
-import PriorityQueueBase
+from .PriorityQueueBase import PriorityQueueBase
 
 class HeapPriorityQueue(PriorityQueueBase):
     """A min oriented priority queue implemented with a heap"""
@@ -15,17 +15,22 @@ class HeapPriorityQueue(PriorityQueueBase):
         """returns an index only; does not check for out of bounds error"""
         return index * 2 + 2 
 
+    def _has_left(self, j):
+        return self._left_child(j) < len(self._data)
+
+    def _has_right(self, j):
+        return self._right_child(j) < len(self._data)
+
     def _swap(self, i, j): 
         self._data[i], self._data[j] = self._data[j], self._data[i]
 
     def _upheap_bubble(self, index):
         j = index
-        while j > 0:
-            parent = self._parent(j)
-            if self._data[j] < self._data[parent]:
-                self._swap_indices(j, parent)
-            j = parent
-        
+        parent = self._parent(j)
+        if j > 0 and self._data[j] < self._data[parent]:
+            self._swap(j, parent)
+            self._upheap_bubble(parent)
+
     def _downheap_bubble(self, index):
         if self._has_left(index):
             left = self._left_child(index)
@@ -36,7 +41,7 @@ class HeapPriorityQueue(PriorityQueueBase):
                     min_child = right
 
             if self._data[index] > self._data[min_child]:
-                self.swap(index, min_child)
+                self._swap(index, min_child)
                 self._downheap_bubble(min_child)
 
     def __init__(self, data = ()):
@@ -52,7 +57,8 @@ class HeapPriorityQueue(PriorityQueueBase):
     def _heapify(self):
         """Organize list into a heap.
         
-        down bubble from every position (starting from bottom)"""
+        down bubble from every position (starting from bottom)
+        """
         start = self._parent(len(self._data) - 1)
         for i in range(start, -1, -1):
             self._downheap_bubble(i)
@@ -61,8 +67,8 @@ class HeapPriorityQueue(PriorityQueueBase):
         return len(self._data)
 
     def add_item(self, key, value): 
-        self._data.append(self._Item(key, Value))
-        self._upheap_bubble(len(self._data))
+        self._data.append(self._Item(key, value))
+        self._upheap_bubble(len(self._data) - 1)
 
     def min(self):
         if self.is_empty(): 

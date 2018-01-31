@@ -30,9 +30,3 @@ class ArrayStack:
 
 
 
-#  in cases where we could have a maximum size up front for the stack
-# we could avoid the amortization by passing a maximum to the constructor and
-# initializing the data member like self._data = [0] * max.  
-# Then you would need a member to keep track of how long the list is.
-# This would avoid the overhead of all of the function calls to append(),
-# and the amortization of resizing.  both approaches run in linear time 

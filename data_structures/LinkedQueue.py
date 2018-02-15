@@ -49,25 +49,74 @@ class LinkedQueue:
 
 
 
+class LinkedNode:
+    def __init__(self, element, next=None):
+        self._elem = element
+        self._next = next
+
+
+class LinkedListTail:
+    def __init__(self):
+        self._ref = None
+
+def enqueue(tail, elem):
+    new = LinkedNode(elem)
+    if tail._ref is None:
+        new._next = new
+        tail._ref = new
+    else:
+        new._next = tail._ref._next
+        tail._ref._next = new
+        tail._ref = new
+
+def dequeue(tail):
+    if tail._ref is None:
+        raise ValueError('The Linked List is empty')
+    answer = tail._ref._next._elem
+    if tail._ref._next is tail._ref:
+        tail._ref = None
+    else:
+        tail._ref._next = tail._ref._next._next
+     
+    return answer
+
+
+
+
+
+
+
 def main():
-    q = LinkedQueue()
-    q.enqueue(1)
-    assertion.equals(1, q.front())
-    assertion.equals(False, q._is_empty())
-    # [1, None, None, None, None]
-    for i in range(2, 6):
-        q.enqueue(i)
-    assertion.equals(1, q.front())
-    assertion.equals(5, q._size)
-    # [1, 2, 3, 4, 5]
-    for i in range(3):
-        q.dequeue()
-    assertion.equals(2, q._size)
-    assertion.equals(4, q.dequeue())
-    assertion.equals(1, q._size)
-    assertion.equals(5, q.dequeue())
-    assertion.equals(0, q._size)
-    # [None, None, None, None, None]
+    tail = LinkedListTail()
+    enqueue(tail, 5)
+    enqueue(tail, 4)
+    enqueue(tail, 3)
+
+    assertion.equals(5, tail._ref._next._elem)
+    assertion.equals(4, tail._ref._next._next._elem)
+    assertion.equals(3, tail._ref._elem)
+
+    assertion.equals(dequeue(tail), 5)
+    assertion.equals(4, tail._ref._next._elem)
+
+    #q = LinkedQueue()
+    #q.enqueue(1)
+    #assertion.equals(1, q.front())
+    #assertion.equals(False, q._is_empty())
+    ## [1, None, None, None, None]
+    #for i in range(2, 6):
+    #    q.enqueue(i)
+    #assertion.equals(1, q.front())
+    #assertion.equals(5, q._size)
+    ## [1, 2, 3, 4, 5]
+    #for i in range(3):
+    #    q.dequeue()
+    #assertion.equals(2, q._size)
+    #assertion.equals(4, q.dequeue())
+    #assertion.equals(1, q._size)
+    #assertion.equals(5, q.dequeue())
+    #assertion.equals(0, q._size)
+    ## [None, None, None, None, None]
     
 
 if __name__ == '__main__':

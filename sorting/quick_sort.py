@@ -3,8 +3,47 @@ from statistics import median
 from collections import deque
 
 # USING A LIST, USING "MEDIAN-OF-THREE" HEURISTIC INSTEAD OF RANDOMIZATION
-# this is a rather weak implementation because we are not doing it in place
+def partition(l, start, end):
+    # select pivot
+    mid = (end - start) // 2
+    pivot_value = median([l[start], l[mid], l[end]])
+    if pivot_value == l[start]:
+        pivot_index = start
+    else:
+        pivot_index = mid if l[mid] == pivot_value else end
+
+    # move pivot to end of list and scan towards the middle
+    l[pivot_index], l[end] = l[end], l[pivot_index]
+    right, left = end - 1, start
+    while left < right:
+        if l[left] < l[end]:
+            left += 1
+        elif l[right] < l[end]:
+            l[left], l[right] = l[right], l[left]
+            left += 1
+        else:
+            right -= 1
+    l[left], l[end] = l[end], l[left]
+    return left
+
+def quick_sort_in_place(l, start, end):
+    if end - start < 1: return
+    elif end - start < 2:
+        if l[end] < l[start]:
+            l[start], l[end] = l[end], l[start]
+        return
+
+    pivot_index = partition(l, start, end)
+    quick_sort_in_place(l, start, pivot_index - 1)
+    quick_sort_in_place(l, pivot_index + 1, end)
+
+
+
 def quick_sort(l):
+    quick_sort_in_place(l, 0, len(l) - 1)
+
+
+def quick_sort_not_in_place(l):
     len_l = len(l)
     if len_l < 2:
         return l
@@ -82,12 +121,26 @@ def main():
     q6 = deque(l6)
 
     print("testing quicksort with a list...")
-    assertion.equals([1,2,3,4,5], quick_sort(l1))
-    assertion.equals([1,2,3], quick_sort(l2))
-    assertion.equals([3], quick_sort(l3))
-    assertion.equals([1,2,4,8,11,56,777,1234], quick_sort(l4))
-    assertion.equals([2,6], quick_sort(l5))
-    assertion.equals([], quick_sort(l6))
+    #assertion.equals([1,2,3,4,5], quick_sort(l1))
+    #assertion.equals([1,2,3], quick_sort(l2))
+    #assertion.equals([3], quick_sort(l3))
+    #assertion.equals([1,2,4,8,11,56,777,1234], quick_sort(l4))
+    #assertion.equals([2,6], quick_sort(l5))
+    #assertion.equals([], quick_sort(l6))
+
+    quick_sort(l1)
+    quick_sort(l2)
+    quick_sort(l3)
+    quick_sort(l4)
+    quick_sort(l5)
+    quick_sort(l6)
+
+    assertion.equals([1,2,3,4,5], l1)
+    assertion.equals([1,2,3], l2)
+    assertion.equals([3], l3)
+    assertion.equals([1,2,4,8,11,56,777,1234], l4)
+    assertion.equals([2,6], l5)
+    assertion.equals([], l6)
 
     print("testing quicksort with a deque...")
     quicksort2(q1)

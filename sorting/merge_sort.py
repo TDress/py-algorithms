@@ -4,7 +4,16 @@ from collections import deque
 # MERGE SORT WITH A PYTHON LIST
 def merge(l1, l2, l):
     """Merge sorted lists l1 and l2 together so that the answer is sorted.
-    Overwrite l with the answer-- everything is done in-place"""
+    Overwrite l with the answer-- everything is done in-place
+    
+    To say that everything is done in place is oversimplified.  We pass list
+    slices to mergesort over and over recursively and every time merge is
+    called it modifies a slice, EXCEPT for the last call with the original list. 
+    So as we recurse down and then come back up the call stack with merge calls,
+    we are modifying list slices and not the original list.  those slices are lost
+    along the way but it doesn't matter because the final call to merge will have two 
+    slices that are both sorted.
+    """
     l1_i = l2_i = 0
     
     while l1_i + l2_i < len(l):

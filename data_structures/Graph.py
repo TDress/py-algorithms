@@ -64,7 +64,6 @@ def get_connected_components(G, visited, ccs):
     """Get the connected components of the graph.  Modified dfs implementation.
 
     :dict ccs: mapping of nodes to connected component numbers.
-    :int cc_count: Current connected component number
     """
     ccs_count = 0
     for node in G.nodes:

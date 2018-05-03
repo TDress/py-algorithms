@@ -14,17 +14,27 @@ def partition(l, start, end):
 
     # move pivot to end of list and scan towards the middle
     l[pivot_index], l[end] = l[end], l[pivot_index]
-    right, left = end - 1, start
-    while left < right:
-        if l[left] < l[end]:
-            left += 1
-        elif l[right] < l[end]:
-            l[left], l[right] = l[right], l[left]
-            left += 1
+    i, j = start, end
+    while j > i:
+        if l[end] < l[j - 1]:
+            j -= 1
         else:
-            right -= 1
-    l[left], l[end] = l[end], l[left]
-    return left
+            l[j - 1], l[i] = l[i], l[j - 1]
+            i += 1
+
+    l[j], l[end] = l[end], l[j]
+    return j
+#    right, left = end - 1, start
+#    while left < right:
+#        if l[left] < l[end]:
+#            left += 1
+#        elif l[right] < l[end]:
+#            l[left], l[right] = l[right], l[left]
+#            left += 1
+#        else:
+#            right -= 1
+#    l[left], l[end] = l[end], l[left]
+#    return left
 
 def quick_sort_in_place(l, start, end):
     if end - start < 1: return

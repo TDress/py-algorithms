@@ -24,9 +24,61 @@ def permutations(S):
     return perms
 
 
+# Alternative method
+def permute2(S, start, end, res):
+    if start == end:
+        res.add(''.join(S))
+    else:
+        for i in range(start, end + 1):
+            S[i], S[start] = S[start], S[i]
+            permute2(S, start + 1, end, res)
+            S[i], S[start] = S[start], S[i]
+
+
+
+def permutations2(str):
+    S, res = list(str), set()
+    permute2(S, 0, len(S) - 1, res)
+    return res
+
+
+def dynamicPermute(S):
+    if len(S) == 0:
+        return set()
+    perms = set(S[0])
+
+    for i in range(1, len(S)):
+        for ss in perms.copy():
+            for pos in range(len(ss) + 1):
+                perms.add(ss[:pos] + S[i] + ss[pos:])
+            perms.remove(ss)
+
+    return perms
+
+def recursiveDynamicPermute(S):
+    if len(S) == 0:
+        return set()
+    elif len(S) == 1:
+        return set(S[0])
+
+    perms = set()
+    for ss in recursiveDynamicPermute(S[:-1]):
+        for j in range(len(ss) + 1):
+            perms.add(ss[:j] + S[-1] + ss[j:])
+
+    return perms
+
+
+
 def main():
     expected = set(('ABC', 'ACB', 'BAC', 'BCA', 'CAB', 'CBA'))
     assertion.equals(expected, permutations('ABC'))
+
+    assertion.equals(expected, permutations2('ABC'))
+
+    assertion.equals(expected, dynamicPermute('ABC'))
+
+    assertion.equals(expected, recursiveDynamicPermute('ABC'))
 
 if __name__ == '__main__':
     main()

@@ -1,5 +1,7 @@
 from lib.assertion import equals
 
+from heapq import heappop, heappush, heapify
+
 class Graph:
     def __init__(self):
         self.nodes = []
@@ -33,6 +35,12 @@ class NodeAdjacencyMap:
 
     def __hash__(self):
         return hash(id(self))
+
+    # simple comparison using node values
+    def __lt__(a, b):
+        return a.value < b.value
+    def __gt__(a, b):
+        return a.value > b.value
 
 
 def explore(node, visited):
@@ -95,6 +103,35 @@ def is_cyclic(G, visited):
                 return True
 
     return False
+
+# NOTE: THIS IS AN INEFFICIENT IMPLEMENTATION OF DIJKSTRAS SHORTEST PATH
+# BECAUSE THE HEAPQ MODULE DOESN'T HAVE A REDUCEKEY METHOD THAT DOES
+# LOGN BUBBLING OF A SINGLE ITEM.  WE HAVE TO RE-HEAPIFY EVERY TIME THE
+# PRIORITY OF AN ITEM CHANGES AND SO THE ALGO RUN TIME IS O(V**2) INSTEAD
+# OF WHAT IT SHOULD BE: O(VLOGV)
+def dijkstra(G, start, dist, prev):
+    """shortest path algorithm
+
+    :param Graph G: graph to traverse
+    :param NodeAdjacencyList start: node to start at
+    :param dict dist: a mapping of nodes to distances from the starting node
+    :param dict prev: a mapping of nodes to the previous node along the 
+        shortest path to that node from the starting node.
+    """
+    int_max = (1 << 32) - 1
+    dist, prev = dict.fromkeys(G.nodes, int_max), dict.fromkeys(G.nodes)
+    dist[start] = 0
+    pq, visited = [(0, start)], set()
+
+    while len(pq) > 0:
+        distance, node = heappop(pq)
+        for weight, child in node.children:
+            if distance + weight < dist[child]:
+                prev[child] = node
+                dist[child] = distance + weight
+                if child not in visited:
+                    heappush(pq, (dist[child], child))
+                    visited.add(child)
 
 
 def main():
@@ -161,6 +198,31 @@ def main():
     equals(True, is_cyclic(graph, set()))
     nodeB.children.clear()
     equals(False, is_cyclic(graph, set()))
+    
+    # test Dijkstra's shortest path
+    graph_weighted = Graph()
+    nodeA = NodeAdjacencyMap('A', graph_weighted)
+    nodeB = NodeAdjacencyMap('B', graph_weighted)
+    nodeC = NodeAdjacencyMap('C', graph_weighted)
+    nodeD = NodeAdjacencyMap('D', graph_weighted)
+    nodeE = NodeAdjacencyMap('E', graph_weighted)
+    nodeF = NodeAdjacencyMap('F', graph_weighted)
+    nodeG = NodeAdjacencyMap('G', graph_weighted)
+    nodeH = NodeAdjacencyMap('H', graph_weighted)
+
+    nodeA.children.add((2, nodeB))
+    nodeB.children.add((2, nodeC))
+    nodeC.children.add((5, nodeD))
+    nodeC.children.add((2, nodeE))
+    nodeC.children.add((3, nodeH))
+    nodeF.children.add((4, nodeE))
+    nodeG.children.add((2, nodeH))
+    nodeH.children.add((6, nodeF))
+    nodeH.children.add((2, nodeA))
+
+    dist, prev = {}, {}
+    # what's the shortest path from G to E
+    dijkstra(graph_weighted, nodeG, dist, prev)
                  
 if __name__ == "__main__":
     main()
